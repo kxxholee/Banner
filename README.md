@@ -10,7 +10,7 @@
 |  Library   |          version        |     Required      |                 Purpose                |
 |------------|-------------------------|-------------------|----------------------------------------|
 |   `PIL`    |   Recommended:`10.1.0`  |        True       |             Image processing           |
-|`catppuccin`|           `Any`         |        True       |       Provide catppuccin palettes      |
+|`catppuccin`|       `>=2.5.0,<3`      |        True       |       Provide catppuccin palettes      |
 | `libraqm`  |           `Any`         |      Optional     |    To use `--text-direction` option    |
 
 install requirements `pip`
@@ -18,7 +18,7 @@ install requirements `pip`
 * install catppuccin with `pip`
 
 ```bash
-$ pip install catppuccin
+$ pip install "catppuccin>=2.5,<3" pillow
 ```
 
 Further resources : 
@@ -56,7 +56,7 @@ The Python code utilizes the argparse library, allowing for various configuratio
 ```python
 flavour_choice = [
     "latte", "frappe",
-    "macchiatto", "mocha",
+    "macchiato", "mocha",
 ]
 
 color_choice = [

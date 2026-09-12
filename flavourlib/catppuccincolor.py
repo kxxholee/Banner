@@ -1,56 +1,54 @@
-from catppuccin import Flavour, Colour
+from catppuccin import PALETTE
+from catppuccin.models import Color, Flavor
+
 
 class CatppuccinColor:
+    """Expose Catppuccin colors in formats accepted by Pillow."""
+
+    _flavours = {flavour.identifier: flavour for flavour in PALETTE}
+    flavour_choice = tuple(_flavours)
+    color_choice = tuple(color.identifier for color in PALETTE.mocha.colors)
 
     def __init__(self, flavour: str):
-        self.flavour_name = flavour
-        self.flavour = CatppuccinColor.get_flavour(flavour) # error for invalid flavour
+        self.flavour = self.get_flavour(flavour)
+        self.flavour_name = self.flavour.identifier
 
-    def chex(self, color:str, prefix='#'):
-        return prefix + CatppuccinColor.get_color(self.flavour_name, color).hex
+    def chex(self, color: str, prefix: str = "#") -> str:
+        return prefix + self.get_color(self.flavour, color).hex.removeprefix("#")
 
-    def crgb(self, color:str):
-        return CatppuccinColor.get_color(self.flavour_name, color).rgb
-    
-    def crgba(self, color:str):
-        return CatppuccinColor.get_color(self.flavour_name, color).rgba
+    def crgb(self, color: str) -> tuple[int, int, int]:
+        rgb = self.get_color(self.flavour, color).rgb
+        return rgb.r, rgb.g, rgb.b
 
-    flavour_choice = [
-        "latte", "frappe",
-        "macchiatto", "mocha",
-    ]
+    def crgba(self, color: str) -> tuple[int, int, int, int]:
+        return (*self.crgb(color), 255)
 
-    color_choice = [
-        "rosewater", "flamingo", "pink", "mauve", "red",
-        "maroon", "peach", "yellow", "green", "teal",
-        "sky", "sapphire", "blue", "lavender", "text",
-        "subtext1", "subtext0", "overlay2", "overlay1",
-        "overlay0", "surface2", "surface1", "surface0",
-        "base", "mantle", "crust",
-    ]
+    @classmethod
+    def get_color(cls, flavour: str | Flavor, color: str) -> Color:
+        if color not in cls.color_choice:
+            choices = ", ".join(cls.color_choice)
+            raise ValueError(
+                f"Unknown Catppuccin color {color!r}. Choose from: {choices}"
+            )
 
-    @staticmethod
-    def get_color(flavour:str|Flavour, color:str) -> Colour:
-        if color not in CatppuccinColor.color_choice:
-            raise ValueError("No such Catppuccin Color")
-        f = None
         if isinstance(flavour, str):
-            f = CatppuccinColor.get_flavour(flavour)
-        else:
-            if isinstance(flavour, Flavour):
-                f = flavour
-            else:
-                raise ValueError("Invalid Flavour Type")
-        return f.__dict__[color]
-        
-    @staticmethod
-    def get_flavour(flavour: str) -> Flavour:
-        if   flavour == "latte":        return Flavour.latte()
-        elif flavour == "frappe":       return Flavour.frappe()
-        elif flavour == "macchiatto":   return Flavour.macchiato()
-        elif flavour == "mocha":        return Flavour.mocha()
-        else:       raise ValueError("Invalid Catppuccin Flavour")
+            flavour = cls.get_flavour(flavour)
+        elif not isinstance(flavour, Flavor):
+            raise TypeError("flavour must be a Catppuccin Flavor or its identifier")
+
+        return getattr(flavour.colors, color)
+
+    @classmethod
+    def get_flavour(cls, flavour: str) -> Flavor:
+        try:
+            return cls._flavours[flavour]
+        except KeyError:
+            choices = ", ".join(cls.flavour_choice)
+            raise ValueError(
+                f"Unknown Catppuccin flavour {flavour!r}. Choose from: {choices}"
+            ) from None
+
 
 if __name__ == "__main__":
-    c = CatppuccinColor("mocha")
-    print(c.chex("base", prefix='#'))
+    colors = CatppuccinColor("mocha")
+    print(colors.chex("base"))
