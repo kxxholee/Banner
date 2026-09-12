@@ -83,7 +83,7 @@ $ python banner.py \
     --text-color=sky \ 
     --text-border-color=text \ 
     --image-border-color=lavender \ 
-    --font="./fonts/Shadows_Into_Light/ShadowsIntoLight-Regular.ttf" \ 
+    --font="/path/to/your/font.ttf" \ 
     --image-border-radius=20 \ 
     --text-align=left \ 
     --text-geometry="40,40" 
@@ -99,12 +99,13 @@ $ python banner.py\
     --text-color=lavender \
     --text-border-color=text \
     --image-border-color=sky \
-    --font="./fonts/Shadows_Into_Light/ShadowsIntoLight-Regular.ttf" \
+    --font="/path/to/your/font.ttf" \
     --image-border-radius=20 \
     --text-align=left \
     --text-geometry="40,40"
 ```
 
-### LICENSE
-given default fonts are sourced from [Google Open Source Fonts](https://fonts.google.com/).   
-Fonts are licensed under OFL.
+### Fonts
+
+Fonts are not bundled with this project. Provide the path to a font that you are
+licensed to use with the `--font` option.
